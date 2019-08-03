@@ -16,6 +16,7 @@ class DevicespiderSpider(scrapy.Spider):
                 brand_page = response.url.replace("makers.php3/", brand_page[0])
                 request = scrapy.Request(brand_page, meta={'brand': brandname[0]}, callback=self.deviceListParse)
                 yield request
+                break
 
     def deviceListParse(self, response):
         devicelist = response.css("div.makers a")
@@ -26,10 +27,16 @@ class DevicespiderSpider(scrapy.Spider):
             device_page = response.urljoin(device_page[0])
             #print(device_page)
             yield scrapy.Request(device_page, meta={'brand': brand}, callback=self.deviceParse)
+            break
 
     def deviceParse(self, response):
-        deviceInfo = response.css("div#specs-list").extract()
+        deviceInfo = response.css("div#specs-list table")
         deviceName = response.css("h1.specs-phone-name-title ::text").extract()
         brand = response.meta['brand']
-        for tr in deviceInfo:
-            print(tr)
+        date = {'brand' : brand, 'deviceNo' : deviceName}
+        for table in deviceInfo:
+            tit = table.css("th::text").extract()
+            date[tit[0]] = {}
+            print(deviceName)
+            print(table.css("*").extract())
+            break
