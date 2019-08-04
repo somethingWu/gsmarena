@@ -8,6 +8,7 @@
 from scrapy import signals
 import random
 
+
 class GsmarenaSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -103,7 +104,7 @@ class GsmarenaDownloaderMiddleware(object):
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-class my_proxy(object):
+class UAproxy(object):
     def process_request(self, request, spider):
         agents = [
             "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
@@ -118,3 +119,15 @@ class my_proxy(object):
         ]
         agent = random.choice(agents)
         request.headers['User-Agent'] = agent
+
+
+class Httpproxy(object):
+    def process_request(self, request, spider):
+        ippool = [
+            'http://163.204.241.27:9999',
+            'http://163.204.241.85:9999',
+            'https://113.121.22.8:9999',
+            'http://163.204.243.130:9999',
+        ]
+        proxy = random.choice(ippool)
+        request.meta['proxy'] = proxy

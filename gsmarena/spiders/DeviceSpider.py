@@ -15,17 +15,18 @@ class DevicespiderSpider(scrapy.Spider):
             brand_page = brand.css("a::attr(href)").extract()
             if brand_page is not None:
                 brand_page = response.url.replace("makers.php3/", brand_page[0])
-                request = scrapy.Request(brand_page, meta={'brand': brandname[0]}, callback=self.deviceListParse)
+                request = scrapy.Request(brand_page, meta={'brand': brandname[0]}, callback=self.devicelistparse)
                 yield request
+            break
 
-    def deviceListParse(self, response):
+    def devicelistparse(self, response):
         devicelist = response.css("div.makers a")
         brand = response.meta['brand']
-        #print(brand)
+        # print(brand)
         for device in devicelist:
             device_page = device.css("a::attr(href)").extract()
             device_page = response.urljoin(device_page[0])
-            #print(device_page)
+            # print(device_page)
             yield scrapy.Request(device_page, meta={'brand': brand}, callback=self.deviceParse)
         next_page = response.css("a.pages-next ::attr(href)").extract()
         if next_page:
